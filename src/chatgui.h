@@ -3,40 +3,30 @@
 
 #include <wx/wx.h>
 
-class ChatLogic; // forward declaration
+#include <memory>
+
+class ChatLogic;
 
 // middle part of the window containing the dialog between user and chatbot
 class ChatBotPanelDialog : public wxScrolledWindow
 {
-private:
-    // control elements
     wxBoxSizer *_dialogSizer;
     wxBitmap _image;
 
-    //// STUDENT CODE
-    ////
-
-    ChatLogic *_chatLogic;
-
-    ////
-    //// EOF STUDENT CODE
-
+    std::unique_ptr<ChatLogic> _chatLogic;
 public:
-    // constructor / destructor
     ChatBotPanelDialog(wxWindow *parent, wxWindowID id);
     ~ChatBotPanelDialog();
 
-    // getter / setter
-    ChatLogic *GetChatLogicHandle() { return _chatLogic; }
+    ChatLogic *GetChatLogicHandle() const { return _chatLogic.get(); }
 
     // events
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
     void render(wxDC &dc);
 
-    // proprietary functions
     void AddDialogItem(wxString text, bool isFromUser = true);
-    void PrintChatbotResponse(std::string response);
+    void PrintChatbotResponse(const std::string &response);
 
     DECLARE_EVENT_TABLE()
 };
@@ -44,40 +34,29 @@ public:
 // dialog item shown in ChatBotPanelDialog
 class ChatBotPanelDialogItem : public wxPanel
 {
-private:
-    // control elements
     wxStaticBitmap *_chatBotImg;
     wxStaticText *_chatBotTxt;
-
 public:
-    // constructor / destructor
     ChatBotPanelDialogItem(wxPanel *parent, wxString text, bool isFromUser);
 };
 
 // frame containing all control elements
 class ChatBotFrame : public wxFrame
 {
-private:
-    // control elements
     ChatBotPanelDialog *_panelDialog;
     wxTextCtrl *_userTextCtrl;
 
     // events
     void OnEnter(wxCommandEvent &WXUNUSED(event));
-
 public:
-    // constructor / desctructor
     ChatBotFrame(const wxString &title);
 };
 
 // control panel for background image display
 class ChatBotFrameImagePanel : public wxPanel
 {
-    // control elements
     wxBitmap _image;
-
 public:
-    // constructor / desctructor
     ChatBotFrameImagePanel(wxFrame *parent);
 
     // events

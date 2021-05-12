@@ -4,33 +4,24 @@
 #include <vector>
 #include <string>
 
-class GraphNode; // forward declaration
+class GraphNode;
 
-class GraphEdge
-{
+class GraphEdge {
+public:
+    GraphEdge(int id, GraphNode *childNode, GraphNode *parentNode);
+
+    int GetID() const { return _id; }
+    GraphNode *GetChildNode() const { return _childNode; }
+    const std::vector<std::string> &GetKeywords() const { return _keywords; }
+
+    void AddToken(const std::string &token);
+
 private:
-    // data handles (not owned)
+    int _id;
     GraphNode *_childNode;
     GraphNode *_parentNode;
 
-    // proprietary members
-    int _id;
-    std::vector<std::string> _keywords; // list of topics associated with this edge
-    
-
-public:
-    // constructor / desctructor
-    GraphEdge(int id);
-
-    // getter / setter
-    int GetID() { return _id; }
-    void SetChildNode(GraphNode *childNode);
-    void SetParentNode(GraphNode *parentNode);
-    GraphNode *GetChildNode() { return _childNode; }
-    std::vector<std::string> GetKeywords() { return _keywords; }
-
-    // proprietary functions
-    void AddToken(std::string token);
+    std::vector<std::string> _keywords;
 };
 
 #endif /* GRAPHEDGE_H_ */

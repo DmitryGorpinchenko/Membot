@@ -1,60 +1,38 @@
 #ifndef GRAPHNODE_H_
 #define GRAPHNODE_H_
 
-#include <vector>
-#include <string>
 #include "chatbot.h"
 
+#include <vector>
+#include <string>
+#include <memory>
 
-// forward declarations
 class GraphEdge;
 
-class GraphNode
-{
-private:
-    //// STUDENT CODE
-    ////
-
-    // data handles (owned)
-    std::vector<GraphEdge *> _childEdges;  // edges to subsequent nodes
-
-    // data handles (not owned)
-    std::vector<GraphEdge *> _parentEdges; // edges to preceding nodes 
-    ChatBot *_chatBot;
-
-    ////
-    //// EOF STUDENT CODE
-
-    // proprietary members
-    int _id;
-    std::vector<std::string> _answers;
-
+class GraphNode {
 public:
-    // constructor / destructor
     GraphNode(int id);
     ~GraphNode();
 
-    // getter / setter
-    int GetID() { return _id; }
-    int GetNumberOfChildEdges() { return _childEdges.size(); }
-    GraphEdge *GetChildEdgeAtIndex(int index);
-    std::vector<std::string> GetAnswers() { return _answers; }
-    int GetNumberOfParents() { return _parentEdges.size(); }
+    int GetID() const { return _id; }
+    size_t GetNumberOfParents() const { return _parentEdges.size(); }
+    size_t GetNumberOfChildEdges() const { return _childEdges.size(); }
+    GraphEdge *GetChildEdgeAtIndex(size_t index) const { return _childEdges[index].get(); }
+    const std::vector<std::string> &GetAnswers() const { return _answers; }
 
-    // proprietary functions
-    void AddToken(std::string token); // add answers to list
+    void AddToken(const std::string &token);
     void AddEdgeToParentNode(GraphEdge *edge);
-    void AddEdgeToChildNode(GraphEdge *edge);
+    void AddEdgeToChildNode(std::unique_ptr<GraphEdge> &&edge);
 
-    //// STUDENT CODE
-    ////
+    void MoveChatbotHere(ChatBot &&chatbot);
 
-    void MoveChatbotHere(ChatBot *chatbot);
+private:
+    int _id;
+    std::vector<std::unique_ptr<GraphEdge>> _childEdges;
+    std::vector<GraphEdge *> _parentEdges;
+    ChatBot _chatBot;
 
-    ////
-    //// EOF STUDENT CODE
-
-    void MoveChatbotToNewNode(GraphNode *newNode);
+    std::vector<std::string> _answers;
 };
 
 #endif /* GRAPHNODE_H_ */
